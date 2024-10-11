@@ -34,9 +34,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
-		// 認可の設定の設定を変えると思ったとおりの表示になります↓↓↓↓
+		// こちらだと思った通りの表示になりません↓↓↓↓
 
-		http.authorizeRequests().anyRequest().permitAll();
+		http.authorizeRequests().antMatchers("/loginForm").permitAll() // loginFormは、全ユーザからのアクセスを許可
+		.anyRequest().authenticated(); // loginForm以外は、認証を求める
 		
 		//ここまで↑↑↑↑
 
