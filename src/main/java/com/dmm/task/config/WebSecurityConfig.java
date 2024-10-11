@@ -33,9 +33,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		// 認可の設定
+		
+		// 認可の設定の設定を変えると思ったとおりの表示になります↓↓↓↓
 
 		http.authorizeRequests().anyRequest().permitAll();
+		
+		//ここまで↑↑↑↑
+
 
 		// ログイン設定
 		http.formLogin() // フォーム認証の有効化
