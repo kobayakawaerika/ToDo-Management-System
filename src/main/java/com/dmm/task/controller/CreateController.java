@@ -34,13 +34,17 @@ public class CreateController {
 	}
 
 	@PostMapping("/main/create")
-	public String handleSubmit(
-			Model model, TaskForm form, @AuthenticationPrincipal AccountUserDetails user) {
+	public String createPost(Model model, TaskForm form, @AuthenticationPrincipal AccountUserDetails user) {
+	    Tasks task = new Tasks();
 
-		// データの処理
-		Tasks task = new Tasks();
-
+		task.setName(user.getName());
+		task.setTitle(form.getTitle()); // タイトルを設定
+	    task.setDate(form.getDate()); // 日付を設定
+	    task.setText(form.getText()); // 内容を設定
+	    
+		model.addAttribute(task);
 		repo.save(task);
+	
 
 		// /main へリダイレクト
 		return "redirect:/main";
