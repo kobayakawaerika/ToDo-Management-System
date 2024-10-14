@@ -7,16 +7,25 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
-public class Tasks {
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 主キーとなるフィールド
-    
-    private String taskName;
-    private LocalDate dueDate;
-    private boolean completed;
+import lombok.Data;
 
+@Entity
+@Data
+public class Tasks {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	
+	private String title;
+	
+    private String name; 
+	
+    private String text;
+    
+    private LocalDate date;
+    
+    private boolean completed;
     
     
 }

@@ -70,6 +70,7 @@ public class MainController {
 		
 		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
 		model.addAttribute("matrix", month);
+		model.addAttribute("month", day);
 		model.addAttribute("week", week);
 		model.addAttribute("tasks", tasks);
 		
