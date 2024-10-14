@@ -75,7 +75,5 @@ public class MainController {
 		model.addAttribute("tasks", tasks);
 		
 		return "/main";
-	}
-	
-
+	}	
 }

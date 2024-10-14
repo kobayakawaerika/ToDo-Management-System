@@ -16,40 +16,34 @@ import com.dmm.task.data.repository.TasksRepository;
 import com.dmm.task.form.TaskForm;
 import com.dmm.task.service.AccountUserDetails;
 
-
 @Controller
 public class CreateController {
-	
+
 	@Autowired
 	private TasksRepository repo;
 
 	@GetMapping("/main/create/{date}")
-    public String create(@PathVariable("date") String date, Model model) {
-        // 受け取った日付文字列をLocalDateに変換
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate parsedDate = LocalDate.parse(date, formatter);
+	public String create(@PathVariable("date") String date, Model model) {
 
-        // 日付に基づいた処理を行う（例: DBから該当するデータを取得）
-        model.addAttribute("date", parsedDate);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate parsedDate = LocalDate.parse(date, formatter);
 
-        // 結果を表示するビュー名を返す
-        return "create";  // create.html というテンプレートに遷移
-    }
-	
-	// Postリクエストでフォームから送信されたデータを受け取るメソッド
-    @PostMapping("/main/create")
-    public String handleSubmit(
-    		Model model, TaskForm form, @AuthenticationPrincipal AccountUserDetails user
-            ) {
-        
+		model.addAttribute("date", parsedDate);
 
-        // データの処理
-        Tasks task = new Tasks();
-        
-        repo.save(task);
-        
-        // /main へリダイレクト
-        return "redirect:/main";
-        
-    }
+		return "create";
+	}
+
+	@PostMapping("/main/create")
+	public String handleSubmit(
+			Model model, TaskForm form, @AuthenticationPrincipal AccountUserDetails user) {
+
+		// データの処理
+		Tasks task = new Tasks();
+
+		repo.save(task);
+
+		// /main へリダイレクト
+		return "redirect:/main";
+
+	}
 }
