@@ -7,12 +7,15 @@ import org.springframework.format.annotation.DateTimeFormat;
 import lombok.Data;
 
 @Data
-public class TaskForm {
-
+public class DditForm {
+	
 	private String title;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate date;
 	
 	private String text;
+	
+	private boolean done;
+
 }

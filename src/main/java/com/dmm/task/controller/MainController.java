@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -12,12 +13,18 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.dmm.task.data.entity.Tasks;
+import com.dmm.task.data.repository.TasksRepository;
 
 @Controller
 public class MainController {
+	
+	@Autowired
+	 private TasksRepository repo;
+	 
 
 	@GetMapping("/main")
 	public String main(Model model) throws Exception {
+		
 
 		//2次元表になるので、ListのListを用意する
 		List<List<LocalDate>> month = new ArrayList<>();
@@ -68,12 +75,23 @@ public class MainController {
 			day = day.plusDays(1);
 		}
 		
-		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
 		model.addAttribute("matrix", month);
-		model.addAttribute("month", day);
+		model.addAttribute("month", day.now());
 		model.addAttribute("week", week);
-		model.addAttribute("tasks", tasks);
+	
 		
+		//タスクを表示させる
+		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
+		List<Tasks> tasksList = repo.findAll();
+		for (Tasks task : tasksList) {
+            LocalDate taskDate = task.getDate(); 
+            tasks.add(taskDate, task); 
+        }
+		
+		model.addAttribute("tasks", tasks);
+
 		return "/main";
 	}	
+	
+
 }
