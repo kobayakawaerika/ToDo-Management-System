@@ -9,9 +9,12 @@ import org.springframework.data.repository.query.Param;
 
 import com.dmm.task.data.entity.Tasks;
 
-public interface TasksRepository extends JpaRepository<Tasks, Integer>{
+public interface TasksRepository extends JpaRepository<Tasks, Integer> {
 
 	@Query("select a from Tasks a where a.date between :from and :to and name = :name")
-	List<Tasks> findByDateBetween(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to, @Param("name") String name);
-	
+	List<Tasks> findByDateBetween(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to,
+			@Param("name") String name);
+
+	List<Tasks> findByName(String name);
+
 }

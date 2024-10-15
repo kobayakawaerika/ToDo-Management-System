@@ -9,21 +9,19 @@ import org.springframework.stereotype.Service;
 import com.dmm.task.data.entity.Users;
 import com.dmm.task.data.repository.UsersRepository;
 
-
-
 @Service
-public class AccountUserDetailsService implements UserDetailsService{
-	
+public class AccountUserDetailsService implements UserDetailsService {
+
 	@Autowired
 	private UsersRepository repository;
 
 	@Override
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-		if(userName == null || "".equals(userName)) {
+		if (userName == null || "".equals(userName)) {
 			throw new UsernameNotFoundException("ユーザー名が空です");
 		}
 		Users user = repository.findById(userName).get();
-		if(user != null) {
+		if (user != null) {
 			return new AccountUserDetails(user);
 		}
 		throw new UsernameNotFoundException(userName);

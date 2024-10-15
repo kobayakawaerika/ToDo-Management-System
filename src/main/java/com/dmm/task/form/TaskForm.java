@@ -15,4 +15,5 @@ public class TaskForm {
 	private LocalDate date;
 	
 	private String text;
+	
 }

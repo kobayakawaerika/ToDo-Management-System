@@ -8,12 +8,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.dmm.task.data.entity.Users;
 
+public class AccountUserDetails implements UserDetails {
 
-
-public class AccountUserDetails implements UserDetails{
-	
 	private Users user;
-	
+
 	public AccountUserDetails(Users user) {
 		this.user = user;
 	}
@@ -52,16 +50,15 @@ public class AccountUserDetails implements UserDetails{
 	public boolean isEnabled() {
 		return true;
 	}
-	
+
 	//エンティティを返す
 	public Users getUser() {
 		return user;
 	}
-	
+
 	//名前を返す
 	public String getName() {
 		return user.getName();
 	}
-	
 
 }

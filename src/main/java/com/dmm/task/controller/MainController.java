@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -14,17 +15,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.dmm.task.data.entity.Tasks;
 import com.dmm.task.data.repository.TasksRepository;
+import com.dmm.task.service.AccountUserDetails;
 
 @Controller
 public class MainController {
-	
-	@Autowired
-	 private TasksRepository repo;
-	 
 
+	@Autowired
+	private TasksRepository repo;
+
+	/**
+	 * 投稿の一覧表示.
+	 * 
+	 * @param model モデル
+	 * @return 遷移先
+	 */
 	@GetMapping("/main")
-	public String main(Model model) throws Exception {
-		
+	public String main(@AuthenticationPrincipal AccountUserDetails userDetails, Model model) throws Exception {
 
 		//2次元表になるので、ListのListを用意する
 		List<List<LocalDate>> month = new ArrayList<>();
@@ -74,24 +80,30 @@ public class MainController {
 			week.add(day);
 			day = day.plusDays(1);
 		}
-		
+
 		model.addAttribute("matrix", month);
-		model.addAttribute("month", day.now());
+		model.addAttribute("month", now);
 		model.addAttribute("week", week);
-	
-		
+
 		//タスクを表示させる
 		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
-		List<Tasks> tasksList = repo.findAll();
+
+		List<Tasks> tasksList;
+
+		if (userDetails.getAuthorities().stream()
+				.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+			tasksList = repo.findAll();
+
+		} else {
+			tasksList = repo.findByName(userDetails.getName());
+		}
 		for (Tasks task : tasksList) {
-            LocalDate taskDate = task.getDate(); 
-            tasks.add(taskDate, task); 
-        }
-		
+			LocalDate taskDate = task.getDate();
+			tasks.add(taskDate, task);
+		}
+
 		model.addAttribute("tasks", tasks);
 
 		return "/main";
-	}	
-	
-
+	}
 }

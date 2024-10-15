@@ -19,6 +19,12 @@ public class EditController {
 	@Autowired
 	private TasksRepository repo;
 
+	/**
+	 * 投稿の一覧表示.
+	 * 
+	 * @param model モデル
+	 * @return 遷移先
+	 */
 	@GetMapping("/main/edit/{id}")
 	public String edit(@PathVariable Integer id, Model model) {
 
@@ -36,7 +42,7 @@ public class EditController {
 	}
 
 	/**
-	 * 投稿を作成.
+	 * 投稿を編集
 	 * 
 	 * @param postForm 送信データ
 	 * @param user     ユーザー情報
