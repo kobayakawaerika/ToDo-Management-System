@@ -75,13 +75,16 @@ public class MainController {
 		for (int i = 0; i < 7; i++) {
 			week.add(day); // 週のリストへ格納
 			day = day.plusDays(1); // 1日進める
+
 		}
 
 		month.add(week); // 1週目のリストを、月のリストへ格納する
 		week = new ArrayList<>(); // 次週のリストを新しくつくる
-		
+
+		int currentMonth = day.getMonthValue(); //今月を保管
+
 		//2週目以降
-		for (int i = 1; i < lastDayOfMonth; i++) {
+		for (int i = 1; i <= lastDayOfMonth; i++) {
 			week.add(day); // 続きの日付を追加
 			day = day.plusDays(1); // 1日進める
 
@@ -90,6 +93,11 @@ public class MainController {
 				month.add(week); // リストをカレンダーに追加
 				week = new ArrayList<>(); // 次週のリストを新しくつくる
 			}
+
+			// 翌月になったらループを抜ける
+			if (currentMonth != day.getMonthValue()) {
+				break;
+			}
 		}
 
 		// 最終週の翌月分
@@ -97,6 +105,10 @@ public class MainController {
 		for (int i = 0; i < 7 - w.getValue(); i++) {
 			week.add(day);
 			day = day.plusDays(1);
+		}
+
+		if (!week.isEmpty()) {
+			month.add(week);
 		}
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月");
