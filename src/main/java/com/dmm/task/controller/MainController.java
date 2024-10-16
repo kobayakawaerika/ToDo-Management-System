@@ -2,10 +2,12 @@ package com.dmm.task.controller;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,20 +32,38 @@ public class MainController {
 	 * @return 遷移先
 	 */
 	@GetMapping("/main")
-	public String main(@AuthenticationPrincipal AccountUserDetails userDetails, Model model) throws Exception {
+	public String main(@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,@AuthenticationPrincipal AccountUserDetails userDetails, 
+			  Model model) throws Exception {
 
 		//2次元表になるので、ListのListを用意する
 		List<List<LocalDate>> month = new ArrayList<>();
 
 		//1週間分のLocalDateを格納するListを用意する
 		List<LocalDate> week = new ArrayList<>();
+		
+		
 
 		//日にちを格納
 		LocalDate day;
+		
+		LocalDate now = LocalDate.now(); //現在の日付
 
 		//その月の1日のLocalDateを取得する
-		LocalDate now = LocalDate.now();
-		LocalDate firstDayOfMonth = now.withDayOfMonth(1);
+		if (date != null) {
+		    now = date;
+		} else {
+		    now = LocalDate.now();
+		}
+		
+		LocalDate firstDayOfMonth = now.withDayOfMonth(1); //今月の1日
+		
+	    LocalDate previousMonth = firstDayOfMonth.minusMonths(1); //前月
+	    LocalDate nextMonth = firstDayOfMonth.plusMonths(1); //翌月
+	    
+	    // モデルに前月と翌月のリンク情報を追加
+	    model.addAttribute("prev", previousMonth);
+	    model.addAttribute("next", nextMonth);
+
 
 		//曜日を表すDayOfWeekを取得し、
 		//上で取得したLocalDateに曜日の値（DayOfWeek#getValue)をマイナスして前月分のLocalDateを求める
@@ -80,9 +100,15 @@ public class MainController {
 			week.add(day);
 			day = day.plusDays(1);
 		}
+	
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月");
+		String formatted = firstDayOfMonth.format(formatter);
+		
 
+		
 		model.addAttribute("matrix", month);
-		model.addAttribute("month", now);
+		model.addAttribute("month", formatted);
 		model.addAttribute("week", week);
 
 		//タスクを表示させる
@@ -105,5 +131,10 @@ public class MainController {
 		model.addAttribute("tasks", tasks);
 
 		return "/main";
+		
+		
 	}
-}
+
+	}
+	
+
