@@ -65,22 +65,23 @@ public class MainController {
 		//曜日を表すDayOfWeekを取得し、
 		//上で取得したLocalDateに曜日の値（DayOfWeek#getValue)をマイナスして前月分のLocalDateを求める
 		DayOfWeek startWeek = firstDayOfMonth.getDayOfWeek();
-		int weekValue = startWeek.getValue();
-		LocalDate prevMonth = firstDayOfMonth.minusDays(weekValue);
-		day = prevMonth;
+		int weekValue = startWeek.getValue() % 7;
+		LocalDate prevMonthStart = firstDayOfMonth.minusDays(weekValue);
+		day = prevMonthStart;
 
 		int lastDayOfMonth = now.lengthOfMonth(); //今月の月末までの日数を取得
 
 		//1日ずつ増やしてLocalDateを求めめる
-		for (int i = 1; i <= 7; i++) {
+		for (int i = 0; i < 7; i++) {
 			week.add(day); // 週のリストへ格納
 			day = day.plusDays(1); // 1日進める
 		}
+
 		month.add(week); // 1週目のリストを、月のリストへ格納する
 		week = new ArrayList<>(); // 次週のリストを新しくつくる
-
+		
 		//2週目以降
-		for (int i = 1; i <= lastDayOfMonth; i++) {
+		for (int i = 1; i < lastDayOfMonth; i++) {
 			week.add(day); // 続きの日付を追加
 			day = day.plusDays(1); // 1日進める
 
@@ -93,7 +94,7 @@ public class MainController {
 
 		// 最終週の翌月分
 		DayOfWeek w = day.getDayOfWeek();
-		for (int i = 1; i < 7 - w.getValue(); i++) {
+		for (int i = 0; i < 7 - w.getValue(); i++) {
 			week.add(day);
 			day = day.plusDays(1);
 		}
