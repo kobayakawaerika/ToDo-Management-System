@@ -57,6 +57,9 @@ public class MainController {
 		LocalDate firstDayOfMonth = now.withDayOfMonth(1); //今月の1日
 		LocalDate previousMonth = firstDayOfMonth.minusMonths(1); //前月の1日
 		LocalDate nextMonth = firstDayOfMonth.plusMonths(1); //翌月の1
+		int lastDayOfMonth = now.lengthOfMonth(); // 今月の月末の日
+		LocalDate lastDayOfCalendar = firstDayOfMonth.withDayOfMonth(lastDayOfMonth)
+				.with(DayOfWeek.SATURDAY); // 最後の週の土曜日まで
 
 		// モデルに前月と翌月のリンク情報を追加
 		model.addAttribute("prev", previousMonth);
@@ -68,8 +71,6 @@ public class MainController {
 		int weekValue = startWeek.getValue() % 7;
 		LocalDate prevMonthStart = firstDayOfMonth.minusDays(weekValue);
 		day = prevMonthStart;
-
-		int lastDayOfMonth = now.lengthOfMonth(); //今月の月末までの日数を取得
 
 		//1日ずつ増やしてLocalDateを求めめる
 		for (int i = 0; i < 7; i++) {
@@ -125,10 +126,10 @@ public class MainController {
 
 		if (userDetails.getAuthorities().stream()
 				.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-			tasksList = repo.findAll();
+			tasksList = repo.findByDateBetween(prevMonthStart, lastDayOfCalendar);
 
 		} else {
-			tasksList = repo.findByName(userDetails.getName());
+			tasksList = repo.findByDateBetween(prevMonthStart, lastDayOfCalendar, userDetails.getName());
 		}
 		for (Tasks task : tasksList) {
 			LocalDate taskDate = task.getDate();
